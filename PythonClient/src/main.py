@@ -8,7 +8,7 @@ import math
 from mpi4py import MPI
 from datetime import datetime
 
-dotenv.load_dotenv('.env')
+#dotenv.load_dotenv('.env')
 
 faker = Faker()
 comm = MPI.COMM_WORLD

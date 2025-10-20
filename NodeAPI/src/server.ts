@@ -1,25 +1,29 @@
 import Express from 'express'
 import dotenv from 'dotenv'
 import fs from 'fs'
-import mysql from 'mysql2'
+import mysql, { Connection } from 'mysql2'
 
-dotenv.config({path:`${process.cwd()}/.env`})
-dotenv.config({path:`${process.cwd()}/../db.env`})
+//dotenv.config({path:`${process.cwd()}/.env`})
+//dotenv.config({path:`${process.cwd()}/../db.env`})
 
 const app = Express(); // Express application
 
 // TABLE CREATION /////////////////////////////////////////////////
 
-const connection = mysql.createConnection({
+let connection:Connection|null = null;
+
+setTimeout(() => {
+    connection = mysql.createConnection({
     'host': process.env.DB_HOST,
     'user': 'root',
     'database': process.env.MYSQL_DATABASE,
     'password': process.env.MYSQL_ROOT_PASSWORD
-})
+    })
 
-const create_table_sql = fs.readFileSync(`${process.cwd()}/table_creation.sql`).toString()
+    const create_table_sql = fs.readFileSync(`${process.cwd()}/table_creation.sql`).toString()
 
-const res = connection.query(create_table_sql);
+    const res = connection.query(create_table_sql);
+}, 5000)
 
 // MIDDLEWARE /////////////////////////////////////////////////////
 
@@ -46,7 +50,7 @@ router.post('/user', async (req, res) =>
 
     try
     {
-        connection.execute('INSERT INTO users VALUES (?, ?, ?)', [username, email, Number(age)])
+        connection?.execute('INSERT INTO users VALUES (?, ?, ?)', [username, email, Number(age)])
     }
     catch(exception)
     {
@@ -67,8 +71,12 @@ app.listen(process.env.PORT, async (error)=>{
 
 
 // LOG CHECKING //////////////////////////////////////////////////
-const CHECK_TIME = 10000 // in ms 
+const CHECK_TIME = 10000 // in ms
+const log_path = `${process.env.LOG_PATH ?? `${process.cwd()}/../shared`}/log.txt`;
 setInterval(()=>{
-    const data = fs.readFileSync(`${process.env.LOG_PATH ?? `${process.cwd()}/../shared`}/log.txt`);
-    console.log('<!> CHECKING LOG SIZE: ', data.toString().split('\n').length, 'lines')
+    if(fs.existsSync(log_path))
+    {
+        const data = fs.readFileSync(log_path);
+        console.log('<!> CHECKING LOG SIZE: ', data.toString().split('\n').length, 'lines');
+    }
 }, CHECK_TIME)

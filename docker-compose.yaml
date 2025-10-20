@@ -1,0 +1,43 @@
+services:
+  node_api:
+    build:
+      context: ./NodeAPI/
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db_service
+    volumes:
+      - ./NodeAPI/src/:/src/
+      - shared_vol:/logs/:ro
+    networks:
+      - db_net
+      - shared_net
+    env_file:
+      - ./NodeAPI/.env
+      - ./db.env
+  db_service:
+    image: mysql
+    env_file:
+      - db.env
+    networks:
+      - db_net
+  python_client:
+    build:
+      context: ./PythonClient/
+      dockerfile: ./Dockerfile
+    depends_on:
+      - node_api
+    volumes:
+      - shared_vol:/logs/:rw
+    networks:
+      - shared_net
+    env_file:
+      - ./PythonClient/.env
+
+volumes:
+  shared_vol:
+
+networks:
+  shared_net:
+    driver: bridge
+  db_net:
+    driver: bridge
