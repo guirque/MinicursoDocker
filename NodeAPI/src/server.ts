@@ -11,10 +11,10 @@ const app = Express(); // Express application
 // TABLE CREATION /////////////////////////////////////////////////
 
 const connection = mysql.createConnection({
-    'host': 'localhost',
-    'user': process.env.MYSQL_USER,
-    'database': process.env.MYSQL_DATABSE,
-    'password': process.env.MYSQL_PASSWORD
+    'host': process.env.DB_HOST,
+    'user': 'root',
+    'database': process.env.MYSQL_DATABASE,
+    'password': process.env.MYSQL_ROOT_PASSWORD
 })
 
 const create_table_sql = fs.readFileSync(`${process.cwd()}/table_creation.sql`).toString()
