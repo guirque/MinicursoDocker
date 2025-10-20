@@ -4,6 +4,8 @@ import fs from 'fs'
 import mysql from 'mysql2'
 
 dotenv.config({path:`${process.cwd()}/.env`})
+dotenv.config({path:`${process.cwd()}/../db.env`})
+
 const app = Express(); // Express application
 
 // TABLE CREATION /////////////////////////////////////////////////
