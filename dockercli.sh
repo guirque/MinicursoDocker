@@ -24,5 +24,4 @@ docker run -d --env-file ./db.env --network db_net --name db_service mysql
 docker run -d -v ./NodeAPI/src/:/src/ -v shared_vol:/logs/:ro --network db_net --network shared_net --env-file ./db.env --env-file ./NodeAPI/.env --name node_api node_api
 
 # Python Client
-
 docker run -it -v shared_vol:/logs/:rw --network shared_net --env-file ./PythonClient/.env --name python_client python_client
