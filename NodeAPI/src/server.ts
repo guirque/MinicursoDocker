@@ -23,7 +23,7 @@ setTimeout(() => {
     const create_table_sql = fs.readFileSync(`${process.cwd()}/table_creation.sql`).toString()
 
     const res = connection.query(create_table_sql);
-}, 5000)
+}, 10000)
 
 // MIDDLEWARE /////////////////////////////////////////////////////
 
